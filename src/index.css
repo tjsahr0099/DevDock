@@ -1,0 +1,254 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(0 0% 3.9%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(0 0% 3.9%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(0 0% 3.9%);
+  --color-primary: hsl(0 0% 9%);
+  --color-primary-foreground: hsl(0 0% 98%);
+  --color-secondary: hsl(0 0% 96.1%);
+  --color-secondary-foreground: hsl(0 0% 9%);
+  --color-muted: hsl(0 0% 96.1%);
+  --color-muted-foreground: hsl(0 0% 45.1%);
+  --color-accent: hsl(0 0% 96.1%);
+  --color-accent-foreground: hsl(0 0% 9%);
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-border: hsl(0 0% 89.8%);
+  --color-input: hsl(0 0% 89.8%);
+  --color-ring: hsl(0 0% 3.9%);
+  --radius: 0.5rem;
+
+  --color-sidebar: hsl(0 0% 98%);
+  --color-sidebar-foreground: hsl(0 0% 3.9%);
+  --color-sidebar-primary: hsl(0 0% 9%);
+  --color-sidebar-primary-foreground: hsl(0 0% 98%);
+  --color-sidebar-accent: hsl(0 0% 96.1%);
+  --color-sidebar-accent-foreground: hsl(0 0% 9%);
+  --color-sidebar-border: hsl(0 0% 89.8%);
+  --color-sidebar-ring: hsl(0 0% 3.9%);
+}
+
+.dark {
+  --color-background: hsl(0 0% 3.9%);
+  --color-foreground: hsl(0 0% 98%);
+  --color-card: hsl(0 0% 3.9%);
+  --color-card-foreground: hsl(0 0% 98%);
+  --color-popover: hsl(0 0% 3.9%);
+  --color-popover-foreground: hsl(0 0% 98%);
+  --color-primary: hsl(0 0% 98%);
+  --color-primary-foreground: hsl(0 0% 9%);
+  --color-secondary: hsl(0 0% 14.9%);
+  --color-secondary-foreground: hsl(0 0% 98%);
+  --color-muted: hsl(0 0% 14.9%);
+  --color-muted-foreground: hsl(0 0% 63.9%);
+  --color-accent: hsl(0 0% 14.9%);
+  --color-accent-foreground: hsl(0 0% 98%);
+  --color-destructive: hsl(0 62.8% 30.6%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-border: hsl(0 0% 20%);
+  --color-input: hsl(0 0% 20%);
+  --color-ring: hsl(0 0% 83.1%);
+
+  --color-sidebar: hsl(0 0% 5.9%);
+  --color-sidebar-foreground: hsl(0 0% 98%);
+  --color-sidebar-primary: hsl(0 0% 98%);
+  --color-sidebar-primary-foreground: hsl(0 0% 9%);
+  --color-sidebar-accent: hsl(0 0% 14.9%);
+  --color-sidebar-accent-foreground: hsl(0 0% 98%);
+  --color-sidebar-border: hsl(0 0% 20%);
+  --color-sidebar-ring: hsl(0 0% 83.1%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
+      "Helvetica Neue", sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.011em;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 50% / 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(0 0% 50% / 0.5);
+}
+
+/* Global interactive transition — layout 속성 제외 (리사이즈 패널 호환) */
+@layer base {
+  button, a, input, select, textarea, [role="tab"] {
+    transition-property: color, background-color, border-color, text-decoration-color,
+                         fill, stroke, opacity, box-shadow, outline-color;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Page layout utility classes */
+@layer utilities {
+  .page-shell {
+    @apply flex h-full flex-col;
+  }
+  .page-toolbar {
+    @apply flex items-center gap-2 border-b border-border px-4 py-2;
+  }
+  .page-statusbar {
+    @apply flex items-center border-t border-border px-4 py-1.5;
+  }
+}
+
+/* ── Animations ── */
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.tab-content-enter {
+  animation: fadeSlideIn 200ms ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-slide-in-up {
+  animation: slideInUp 300ms ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-slide-in-left {
+  animation: slideInLeft 300ms ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 200ms ease-out;
+}
+
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.animate-pulse-subtle {
+  animation: pulseSubtle 2s ease-in-out infinite;
+}
+
+/* Staggered animation for lists */
+.stagger-enter > * {
+  animation: slideInUp 300ms ease-out both;
+}
+.stagger-enter > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-enter > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-enter > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-enter > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-enter > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-enter > *:nth-child(6) { animation-delay: 250ms; }
+.stagger-enter > *:nth-child(7) { animation-delay: 300ms; }
+.stagger-enter > *:nth-child(8) { animation-delay: 350ms; }
+
+/* Checkerboard background for diagram/image viewers */
+.bg-checkerboard {
+  background-image:
+    linear-gradient(45deg, hsl(0 0% 50% / 0.06) 25%, transparent 25%),
+    linear-gradient(-45deg, hsl(0 0% 50% / 0.06) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, hsl(0 0% 50% / 0.06) 75%),
+    linear-gradient(-45deg, transparent 75%, hsl(0 0% 50% / 0.06) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+}
+
+/* CSS Spinner */
+@keyframes spin-fade {
+  0% { opacity: 1; }
+  100% { opacity: 0.25; }
+}
+.css-spinner {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+.css-spinner > div {
+  position: absolute;
+  width: 2px;
+  height: 7px;
+  left: 11px;
+  top: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transform-origin: center 10px;
+  animation: spin-fade 1s linear infinite;
+}
+.css-spinner > div:nth-child(1)  { transform: rotate(0deg);   animation-delay: -0.917s; }
+.css-spinner > div:nth-child(2)  { transform: rotate(30deg);  animation-delay: -0.833s; }
+.css-spinner > div:nth-child(3)  { transform: rotate(60deg);  animation-delay: -0.75s; }
+.css-spinner > div:nth-child(4)  { transform: rotate(90deg);  animation-delay: -0.667s; }
+.css-spinner > div:nth-child(5)  { transform: rotate(120deg); animation-delay: -0.583s; }
+.css-spinner > div:nth-child(6)  { transform: rotate(150deg); animation-delay: -0.5s; }
+.css-spinner > div:nth-child(7)  { transform: rotate(180deg); animation-delay: -0.417s; }
+.css-spinner > div:nth-child(8)  { transform: rotate(210deg); animation-delay: -0.333s; }
+.css-spinner > div:nth-child(9)  { transform: rotate(240deg); animation-delay: -0.25s; }
+.css-spinner > div:nth-child(10) { transform: rotate(270deg); animation-delay: -0.167s; }
+.css-spinner > div:nth-child(11) { transform: rotate(300deg); animation-delay: -0.083s; }
+.css-spinner > div:nth-child(12) { transform: rotate(330deg); animation-delay: 0s; }
