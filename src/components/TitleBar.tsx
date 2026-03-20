@@ -19,6 +19,8 @@ interface TitleBarProps {
   onOpenTabSettings: () => void;
 }
 
+const IS_MACOS = navigator.userAgent.includes("Macintosh") || navigator.platform.startsWith("Mac");
+
 export default function TitleBar({
   themeId,
   onSetThemeId,
@@ -28,6 +30,7 @@ export default function TitleBar({
   const [maximized, setMaximized] = useState(false);
 
   useEffect(() => {
+    if (IS_MACOS) return;
     // Check initial state
     appWindow.isMaximized().then(setMaximized);
     // Listen for resize changes
@@ -44,7 +47,7 @@ export default function TitleBar({
 
   return (
     <div
-      data-tauri-drag-region
+      {...(!IS_MACOS ? { "data-tauri-drag-region": true } : {})}
       className="flex h-9 select-none items-center justify-between border-b border-border/50 bg-background/80 backdrop-blur-sm"
     >
       {/* Left: Logo + Menu */}
@@ -150,27 +153,29 @@ export default function TitleBar({
         </DropdownMenu>
       </div>
 
-      {/* Right: Window controls */}
-      <div className="flex">
-        <button
-          onClick={() => appWindow.minimize()}
-          className="inline-flex h-9 w-11 items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground"
-        >
-          <Minus className="h-3.5 w-3.5" />
-        </button>
-        <button
-          onClick={() => appWindow.toggleMaximize()}
-          className="inline-flex h-9 w-11 items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground"
-        >
-          {maximized ? <Copy className="h-3 w-3" /> : <Square className="h-3 w-3" />}
-        </button>
-        <button
-          onClick={() => appWindow.close()}
-          className="inline-flex h-9 w-11 items-center justify-center text-muted-foreground hover:bg-destructive hover:text-destructive-foreground"
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
-      </div>
+      {/* Right: Window controls (Windows only) */}
+      {!IS_MACOS && (
+        <div className="flex">
+          <button
+            onClick={() => appWindow.minimize()}
+            className="inline-flex h-9 w-11 items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <Minus className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={() => appWindow.toggleMaximize()}
+            className="inline-flex h-9 w-11 items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            {maximized ? <Copy className="h-3 w-3" /> : <Square className="h-3 w-3" />}
+          </button>
+          <button
+            onClick={() => appWindow.close()}
+            className="inline-flex h-9 w-11 items-center justify-center text-muted-foreground hover:bg-destructive hover:text-destructive-foreground"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

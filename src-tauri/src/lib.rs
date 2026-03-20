@@ -72,6 +72,14 @@ pub fn run() {
                         .build(),
                 )?;
             }
+            // Windows: disable decorations for custom titlebar
+            #[cfg(target_os = "windows")]
+            {
+                use tauri::Manager;
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = window.set_decorations(false);
+                }
+            }
             Ok(())
         })
         .run(tauri::generate_context!())
