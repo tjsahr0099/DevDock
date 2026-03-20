@@ -66,7 +66,12 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
 
   saveSettings: async (partial: Partial<Settings>) => {
     try {
-      const current = useSettingsStore.getState().settings;
+      // Always read from file first to avoid overwriting other fields
+      let current = useSettingsStore.getState().settings;
+      try {
+        const raw = await invoke<string>("get_settings");
+        current = { ...current, ...JSON.parse(raw) };
+      } catch { /* use in-memory state */ }
       const merged = { ...current, ...partial };
       await invoke("save_settings", { data: JSON.stringify(merged) });
       set({ settings: merged });
