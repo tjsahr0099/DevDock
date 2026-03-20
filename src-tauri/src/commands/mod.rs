@@ -1,9 +1,12 @@
+pub mod api;
 pub mod callflow;
 pub mod db;
 pub mod docker;
 pub mod excel;
 pub mod fs;
+pub mod git;
 pub mod markdown;
+pub mod netcheck;
 pub mod puml;
 pub mod server_config;
 pub mod settings;

@@ -15,7 +15,10 @@ export interface Settings {
   theme: "light" | "dark";
   themeId?: string;
   mdViewerFolderPath?: string;
+  mdViewerRecentPaths?: string[];
   pumlViewerFolderPath?: string;
+  gitHistoryRepoPath?: string;
+  gitHistoryRecentPaths?: string[];
   navPosition?: NavPosition;
   navDisplayMode?: NavDisplayMode;
 }
@@ -40,6 +43,10 @@ const DEFAULT_TABS: TabConfig[] = [
   { id: "servermanager", label: "서버 관리", visible: true, order: 5 },
   { id: "servermonitor", label: "서버 모니터링", visible: true, order: 6 },
   { id: "jsontool", label: "JSON Tool", visible: true, order: 7 },
+  { id: "cicd", label: "CI/CD", visible: true, order: 8 },
+  { id: "netcheck", label: "연결 검사", visible: true, order: 9 },
+  { id: "githistory", label: "Git 히스토리", visible: true, order: 10 },
+  { id: "apitester", label: "API 테스트", visible: true, order: 11 },
 ];
 
 export const useSettingsStore = create<SettingsStore>((set) => ({
@@ -72,13 +79,22 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
     try {
       const raw = await invoke<string>("get_tab_settings");
       let tabs = JSON.parse(raw) as TabConfig[];
+      let changed = false;
       // Migrate: remove dashboard tab if present
-      const hadDashboard = tabs.some((t) => t.id === "dashboard");
-      if (hadDashboard) {
+      if (tabs.some((t) => t.id === "dashboard")) {
         tabs = tabs.filter((t) => t.id !== "dashboard");
-        // Re-number orders to keep them contiguous
+        changed = true;
+      }
+      // Migrate: add any new tabs from DEFAULT_TABS that are missing
+      const existingIds = new Set(tabs.map((t) => t.id));
+      for (const def of DEFAULT_TABS) {
+        if (!existingIds.has(def.id)) {
+          tabs.push({ ...def, order: tabs.length });
+          changed = true;
+        }
+      }
+      if (changed) {
         tabs.sort((a, b) => a.order - b.order).forEach((t, i) => (t.order = i));
-        // Persist migration
         invoke("save_tab_settings", { data: JSON.stringify(tabs) }).catch(() => {});
       }
       if (tabs.length > 0) {

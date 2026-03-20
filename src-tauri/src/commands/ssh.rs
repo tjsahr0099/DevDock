@@ -26,12 +26,18 @@ async fn connect_and_exec(
     password: &str,
     command: &str,
 ) -> Result<String, String> {
-    let config = Arc::new(client::Config::default());
+    let mut config = client::Config::default();
+    config.inactivity_timeout = Some(std::time::Duration::from_secs(3));
+    let config = Arc::new(config);
     let handler = ClientHandler;
 
-    let mut session = client::connect(config, (host, port), handler)
-        .await
-        .map_err(|e| format!("Connection failed: {}", e))?;
+    let mut session = tokio::time::timeout(
+        std::time::Duration::from_secs(3),
+        client::connect(config, (host, port), handler),
+    )
+    .await
+    .map_err(|_| "Connection timed out (3s)".to_string())?
+    .map_err(|e| format!("Connection failed: {}", e))?;
 
     let authenticated = session
         .authenticate_password(username, password)

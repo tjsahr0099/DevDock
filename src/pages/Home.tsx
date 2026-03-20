@@ -8,6 +8,10 @@ import {
   Server,
   Activity,
   FileJson,
+  Rocket,
+  Network,
+  History,
+  Globe,
   type LucideIcon,
 } from "lucide-react";
 
@@ -60,6 +64,30 @@ const TOOL_DEFS: ToolDef[] = [
     icon: FileJson,
     description: "JSON 포맷팅 및 검증",
     accentColor: "hsl(45 93% 47%)",
+  },
+  {
+    id: "cicd",
+    icon: Rocket,
+    description: "Git + Jenkins CI/CD 연동",
+    accentColor: "hsl(280 70% 55%)",
+  },
+  {
+    id: "netcheck",
+    icon: Network,
+    description: "Ping, 포트, HTTP 연결 검사",
+    accentColor: "hsl(190 80% 42%)",
+  },
+  {
+    id: "githistory",
+    icon: History,
+    description: "Git 커밋 히스토리 조회",
+    accentColor: "hsl(15 80% 55%)",
+  },
+  {
+    id: "apitester",
+    icon: Globe,
+    description: "HTTP API 요청 테스트",
+    accentColor: "hsl(200 80% 50%)",
   },
 ];
 

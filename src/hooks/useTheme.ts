@@ -21,7 +21,7 @@ function applyTheme(themeId: ThemeId) {
   const root = document.documentElement;
 
   // Set dark/light mode class
-  if (def.mode === "dark") {
+  if (def.cssMode === "dark") {
     root.classList.add("dark");
   } else {
     root.classList.remove("dark");
@@ -32,8 +32,8 @@ function applyTheme(themeId: ThemeId) {
     root.style.setProperty(key, value);
   }
 
-  // Also sync card/popover/input/destructive variables for dark themes
-  if (def.mode === "dark") {
+  // Also sync card/popover/input/destructive variables
+  if (def.cssMode === "dark") {
     root.style.setProperty("--color-card", def.cssOverrides["--color-background"] ?? "");
     root.style.setProperty("--color-card-foreground", def.cssOverrides["--color-foreground"] ?? "");
     root.style.setProperty("--color-popover", def.cssOverrides["--color-background"] ?? "");
@@ -49,7 +49,7 @@ function applyTheme(themeId: ThemeId) {
 
   localStorage.setItem(STORAGE_KEY, themeId);
   // Keep legacy key in sync for backward compatibility
-  localStorage.setItem(LEGACY_KEY, def.mode);
+  localStorage.setItem(LEGACY_KEY, def.cssMode);
 }
 
 export function useTheme() {
@@ -63,8 +63,8 @@ export function useTheme() {
     setThemeIdState(id);
   }, []);
 
-  // Legacy compat: returns "light" | "dark"
-  const theme: ThemeMode = getTheme(themeId).mode;
+  // Returns actual CSS mode: "light" | "dark"
+  const theme = getTheme(themeId).cssMode;
 
   const toggleTheme = useCallback(() => {
     setThemeIdState((prev) => {

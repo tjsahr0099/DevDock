@@ -7,6 +7,10 @@ import {
   Server,
   Activity,
   FileJson,
+  Rocket,
+  Network,
+  History,
+  Globe,
   type LucideIcon,
 } from "lucide-react";
 
@@ -19,4 +23,8 @@ export const TAB_ICONS: Record<string, LucideIcon> = {
   servermanager: Server,
   servermonitor: Activity,
   jsontool: FileJson,
+  cicd: Rocket,
+  netcheck: Network,
+  githistory: History,
+  apitester: Globe,
 };

@@ -51,6 +51,18 @@ pub fn run() {
             commands::callflow::generate_sequence_diagram,
             // Markdown
             commands::markdown::markdown_to_pdf,
+            // NetCheck
+            commands::netcheck::get_netcheck_targets,
+            commands::netcheck::save_netcheck_targets,
+            commands::netcheck::run_netcheck,
+            // API Tester
+            commands::api::get_api_collections,
+            commands::api::save_api_collections,
+            commands::api::send_http_request,
+            // Git History
+            commands::git::git_list_branches,
+            commands::git::git_get_commits,
+            commands::git::git_get_diff,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

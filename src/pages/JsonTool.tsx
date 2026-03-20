@@ -365,7 +365,7 @@ export default function JsonTool() {
         {/* Input */}
         <ResizablePanel id="jt-input" defaultSize="50" minSize="25">
           <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between border-b border-border px-4 py-1.5">
+            <div className="flex h-8 items-center justify-between border-b border-border px-4">
               <span className="text-xs font-medium text-muted-foreground">입력 JSON</span>
               <span className="text-[10px] text-muted-foreground tabular-nums">
                 {charCount}자, {lineCount}줄
@@ -400,7 +400,7 @@ export default function JsonTool() {
         {/* Output */}
         <ResizablePanel id="jt-output" defaultSize="50" minSize="25">
           <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between border-b border-border px-4 py-1.5">
+            <div className="flex h-8 items-center justify-between border-b border-border px-4">
               <span className="text-xs font-medium text-muted-foreground">결과</span>
               <div className="flex gap-1">
                 <Button

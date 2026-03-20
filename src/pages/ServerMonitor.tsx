@@ -140,7 +140,7 @@ function SortableServerCard({
       <CardContent className="p-0">
         {/* ── Card header (always visible, clickable to toggle) ── */}
         <div
-          className="flex items-center gap-2 p-3 cursor-pointer hover:bg-accent/30 transition-colors"
+          className="flex items-center gap-2 px-2.5 py-1.5 cursor-pointer hover:bg-accent/30 transition-colors"
           onClick={onToggle}
         >
           <button
@@ -207,7 +207,7 @@ function SortableServerCard({
 
         {/* ── Collapsed: container badges or skeleton ── */}
         {!expanded && showContainers && card.containers.length > 0 && (
-          <div className="flex flex-wrap gap-1 px-3 pb-2.5 pt-0">
+          <div className="flex flex-wrap gap-1 px-2.5 pb-1.5 pt-0">
             {card.containers.map((c) => (
               <Badge
                 key={c.container_id}
@@ -221,7 +221,7 @@ function SortableServerCard({
           </div>
         )}
         {!expanded && card.loading && !card.health && !card.error && (
-          <div className="flex gap-1 px-3 pb-2.5 pt-0">
+          <div className="flex gap-1 px-2.5 pb-1.5 pt-0">
             <Skeleton className="h-5 w-16 rounded-full" />
             <Skeleton className="h-5 w-20 rounded-full" />
             <Skeleton className="h-5 w-14 rounded-full" />
@@ -230,7 +230,7 @@ function SortableServerCard({
 
         {/* ── Expanded: full detail ── */}
         {expanded && (
-          <div className="border-t border-border p-3 space-y-3 animate-fade-in">
+          <div className="border-t border-border px-2.5 py-2 space-y-2 animate-fade-in">
             {/* Loading skeleton */}
             {card.loading && !card.health && !card.error && (
               <div className="space-y-3">
@@ -263,69 +263,47 @@ function SortableServerCard({
             {/* Host info */}
             {card.health && (
               <>
-                <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                      <Server className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{card.health.hostname}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Uptime: {card.health.uptime}
-                      </p>
-                    </div>
+                {/* Host info - compact inline */}
+                <div className="flex items-center gap-4 rounded-md bg-muted/50 px-2.5 py-1.5 text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <Server className="h-3.5 w-3.5 text-primary" />
+                    <span className="font-medium">{card.health.hostname}</span>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs text-muted-foreground">Load Average</p>
-                    <p className="text-sm font-medium tabular-nums">
-                      {card.health.load_average}
-                    </p>
-                  </div>
+                  <span className="text-muted-foreground">Uptime: {card.health.uptime}</span>
+                  <span className="ml-auto text-muted-foreground">Load: <span className="font-medium tabular-nums text-foreground">{card.health.load_average}</span></span>
                 </div>
 
-                {/* Resource gauges */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="space-y-1.5 rounded-lg border border-border p-3">
-                    <div className="flex items-center gap-1.5">
-                      <Cpu className="h-4 w-4 text-blue-500" />
-                      <span className="text-sm font-medium">CPU</span>
+                {/* Resource gauges - compact */}
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="rounded-md border border-border px-2.5 py-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-1">
+                        <Cpu className="h-3 w-3 text-blue-500" />
+                        <span className="text-xs font-medium">CPU</span>
+                      </div>
+                      <span className="text-lg font-bold tabular-nums">{card.health.cpu_usage.toFixed(1)}%</span>
                     </div>
-                    <p className="text-2xl font-bold tabular-nums">
-                      {card.health.cpu_usage.toFixed(1)}%
-                    </p>
-                    <GaugeBar
-                      label=""
-                      value={card.health.cpu_usage}
-                      detail={`${card.health.cpu_cores}코어`}
-                    />
+                    <GaugeBar label="" value={card.health.cpu_usage} detail={`${card.health.cpu_cores}코어`} />
                   </div>
-                  <div className="space-y-1.5 rounded-lg border border-border p-3">
-                    <div className="flex items-center gap-1.5">
-                      <MemoryStick className="h-4 w-4 text-purple-500" />
-                      <span className="text-sm font-medium">메모리</span>
+                  <div className="rounded-md border border-border px-2.5 py-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-1">
+                        <MemoryStick className="h-3 w-3 text-purple-500" />
+                        <span className="text-xs font-medium">메모리</span>
+                      </div>
+                      <span className="text-lg font-bold tabular-nums">{card.health.mem_usage_percent.toFixed(1)}%</span>
                     </div>
-                    <p className="text-2xl font-bold tabular-nums">
-                      {card.health.mem_usage_percent.toFixed(1)}%
-                    </p>
-                    <GaugeBar
-                      label=""
-                      value={card.health.mem_usage_percent}
-                      detail={`${card.health.mem_used}/${card.health.mem_total}MB`}
-                    />
+                    <GaugeBar label="" value={card.health.mem_usage_percent} detail={`${card.health.mem_used}/${card.health.mem_total}MB`} />
                   </div>
-                  <div className="space-y-1.5 rounded-lg border border-border p-3">
-                    <div className="flex items-center gap-1.5">
-                      <HardDrive className="h-4 w-4 text-orange-500" />
-                      <span className="text-sm font-medium">디스크</span>
+                  <div className="rounded-md border border-border px-2.5 py-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-1">
+                        <HardDrive className="h-3 w-3 text-orange-500" />
+                        <span className="text-xs font-medium">디스크</span>
+                      </div>
+                      <span className="text-lg font-bold tabular-nums">{card.health.disk_usage_percent.toFixed(1)}%</span>
                     </div>
-                    <p className="text-2xl font-bold tabular-nums">
-                      {card.health.disk_usage_percent.toFixed(1)}%
-                    </p>
-                    <GaugeBar
-                      label=""
-                      value={card.health.disk_usage_percent}
-                      detail={`${card.health.disk_used}/${card.health.disk_total}GB`}
-                    />
+                    <GaugeBar label="" value={card.health.disk_usage_percent} detail={`${card.health.disk_used}/${card.health.disk_total}GB`} />
                   </div>
                 </div>
               </>
@@ -639,10 +617,10 @@ export default function ServerMonitor() {
       }
     >
       <ScrollArea className="flex-1">
-        <div className="flex flex-col gap-3 p-4">
+        <div className="flex flex-col gap-2 p-3">
           {/* Stats strip */}
           {cards.size > 0 && (
-            <div className="grid grid-cols-4 gap-3 animate-fade-in">
+            <div className="grid grid-cols-4 gap-2 animate-fade-in">
               <StatCard label="전체 서버" value={totalServers} icon={Server} />
               <StatCard
                 label="온라인"
@@ -681,7 +659,7 @@ export default function ServerMonitor() {
               items={filteredCards.map((c) => c.server.id)}
               strategy={verticalListSortingStrategy}
             >
-              <div className="flex flex-col gap-3 stagger-enter">
+              <div className="flex flex-col gap-2 stagger-enter">
                 {filteredCards.map((card) => (
                   <SortableServerCard
                     key={card.server.id}

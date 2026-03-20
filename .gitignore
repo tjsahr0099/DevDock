@@ -8,3 +8,7 @@ Thumbs.db
 .idea/
 .claude/settings.local.json
 tsconfig.tsbuildinfo
+todo/
+docs/design/
+docs/features/
+docs/AGENT-PIPELINE.md

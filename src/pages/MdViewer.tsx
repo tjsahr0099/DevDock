@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import Markdown from "react-markdown";
@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/resizable";
 import { useGroupRef } from "react-resizable-panels";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import FileTree, { type FileNode } from "@/components/FileTree";
 import EmptyState from "@/components/EmptyState";
+import PathInputWithHistory from "@/components/RecentPathsMenu";
 import {
   FolderOpen,
   RefreshCw,
@@ -61,9 +61,11 @@ export default function MdViewer() {
       setContent("");
       setFileName("");
       loadTree(path);
-      saveSettings({ mdViewerFolderPath: path });
+      const recent = settings.mdViewerRecentPaths || [];
+      const updated = [path, ...recent.filter((p) => p !== path)].slice(0, 10);
+      saveSettings({ mdViewerFolderPath: path, mdViewerRecentPaths: updated });
     }
-  }, [loadTree, saveSettings]);
+  }, [loadTree, saveSettings, settings.mdViewerRecentPaths]);
 
   const handleRefresh = useCallback(() => {
     if (folderPath) {
@@ -117,11 +119,19 @@ export default function MdViewer() {
     }
   }, [content, fileName]);
 
+  const initializedRef = useRef(false);
   useEffect(() => {
-    if (folderPath) {
-      loadTree(folderPath);
+    if (initializedRef.current) return;
+    const path = settings.mdViewerFolderPath;
+    if (!path) return;
+    initializedRef.current = true;
+    setFolderPath(path);
+    if (!settings.mdViewerRecentPaths?.includes(path)) {
+      const recent = settings.mdViewerRecentPaths || [];
+      saveSettings({ mdViewerRecentPaths: [path, ...recent].slice(0, 10) });
     }
-  }, []);
+    loadTree(path);
+  }, [settings.mdViewerFolderPath]);
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -138,17 +148,25 @@ export default function MdViewer() {
       helpKey="mdviewer"
       toolbar={
         <>
-          <Input
+          <PathInputWithHistory
             value={folderPath}
-            onChange={(e) => setFolderPath(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                loadTree(folderPath);
-                saveSettings({ mdViewerFolderPath: folderPath });
-              }
+            onChange={setFolderPath}
+            onSubmit={(v) => {
+              loadTree(v);
+              const recent = settings.mdViewerRecentPaths || [];
+              const updated = [v, ...recent.filter((p) => p !== v)].slice(0, 10);
+              saveSettings({ mdViewerFolderPath: v, mdViewerRecentPaths: updated });
+            }}
+            recentPaths={settings.mdViewerRecentPaths || []}
+            onSelect={(v) => {
+              setFolderPath(v);
+              setSelectedFile(null);
+              setContent("");
+              setFileName("");
+              loadTree(v);
+              saveSettings({ mdViewerFolderPath: v });
             }}
             placeholder="마크다운 폴더 경로"
-            className="h-7 flex-1 text-sm"
           />
           <Button size="sm" variant="outline" onClick={handleBrowse}>
             <FolderOpen className="mr-1 h-3.5 w-3.5" />
@@ -162,6 +180,15 @@ export default function MdViewer() {
       statusBar={<span className="text-xs text-muted-foreground">{statusMessage}</span>}
     >
 
+      {fileTree.length === 0 && !folderPath ? (
+        <div className="flex flex-1 items-center justify-center">
+          <EmptyState
+            icon={FileText}
+            title="폴더를 선택하세요"
+            description="폴더를 선택하면 마크다운 파일을 미리볼 수 있습니다"
+          />
+        </div>
+      ) : (
       <ResizablePanelGroup
         groupRef={groupRef}
         orientation="horizontal"
@@ -232,18 +259,15 @@ export default function MdViewer() {
               <div className="flex flex-1 items-center justify-center min-h-0">
                 <EmptyState
                   icon={FileText}
-                  title={folderPath ? "파일을 선택하세요" : "폴더를 선택하세요"}
-                  description={
-                    folderPath
-                      ? "좌측 트리에서 마크다운 파일을 선택하면 미리볼 수 있습니다"
-                      : "폴더를 선택하면 마크다운 파일을 미리볼 수 있습니다"
-                  }
+                  title="파일을 선택하세요"
+                  description="좌측 트리에서 마크다운 파일을 선택하면 미리볼 수 있습니다"
                 />
               </div>
             )}
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+      )}
     </TabPage>
   );
 }

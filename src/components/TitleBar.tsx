@@ -40,6 +40,7 @@ export default function TitleBar({
   const currentTheme = getTheme(themeId);
   const darkThemes = THEMES.filter((t) => t.mode === "dark");
   const lightThemes = THEMES.filter((t) => t.mode === "light");
+  const styledThemes = THEMES.filter((t) => t.mode === "styled");
 
   return (
     <div
@@ -100,6 +101,27 @@ export default function TitleBar({
                   라이트
                 </div>
                 {lightThemes.map((t) => (
+                  <DropdownMenuItem
+                    key={t.id}
+                    onClick={() => onSetThemeId(t.id)}
+                    className="flex items-center gap-2"
+                  >
+                    <span
+                      className="inline-block h-3 w-3 shrink-0 rounded-full border border-border"
+                      style={{ backgroundColor: t.previewColor }}
+                    />
+                    <span className="flex-1">{t.label}</span>
+                    {themeId === t.id && <Check className="h-3.5 w-3.5 text-primary" />}
+                  </DropdownMenuItem>
+                ))}
+
+                <DropdownMenuSeparator />
+
+                {/* Styled themes */}
+                <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                  스타일
+                </div>
+                {styledThemes.map((t) => (
                   <DropdownMenuItem
                     key={t.id}
                     onClick={() => onSetThemeId(t.id)}

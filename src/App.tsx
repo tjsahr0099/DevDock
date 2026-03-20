@@ -16,6 +16,10 @@ const CallFlow = lazy(() => import("@/pages/CallFlow"));
 const ServerManager = lazy(() => import("@/pages/ServerManager"));
 const ServerMonitor = lazy(() => import("@/pages/ServerMonitor"));
 const JsonTool = lazy(() => import("@/pages/JsonTool"));
+const CiCd = lazy(() => import("@/pages/CiCd"));
+const NetCheck = lazy(() => import("@/pages/NetCheck"));
+const GitHistory = lazy(() => import("@/pages/GitHistory"));
+const ApiTester = lazy(() => import("@/pages/ApiTester"));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const PAGE_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<any>>> = {
@@ -27,6 +31,10 @@ const PAGE_MAP: Record<string, React.LazyExoticComponent<React.ComponentType<any
   servermanager: ServerManager,
   servermonitor: ServerMonitor,
   jsontool: JsonTool,
+  cicd: CiCd,
+  netcheck: NetCheck,
+  githistory: GitHistory,
+  apitester: ApiTester,
 };
 
 function Loading() {
